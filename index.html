@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #0078d7;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .container button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .container button:hover {
+            background-color: #005bb5;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            font-family: monospace;
+        }
+
+        /* Hidden by default, shown after successful login */
+        #codegenPage {
+            display: none;
+        }
+
+        /* Hide login page after successful login */
+        #loginPage {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button id="loginBtn">Login</button>
+    </div>
+
+    <!-- Code Generator Page (hidden initially) -->
+    <div id="codegenPage" class="container">
+        <header>Code Generator</header>
+        <h2>Generate PowerShell Code</h2>
+        <input type="text" id="folderPath" placeholder="Enter Folder Path">
+        <input type="text" id="loanNumber" placeholder="Enter Loan Number">
+        <button id="generateBtn">Generate Code</button>
+        <textarea id="output" readonly placeholder="Generated code will appear here..."></textarea>
+        <h3>Instructions:</h3>
+        <h2>Enter Folder path, Loan number and click generate code</h2>
+        <h2>Copy the code and paste in powershell click enter</h2>
+        <h2>Refresh the page and login again </h2>
+        <h6>copy rights @ khaleel_s</h6>
+    </div>
+
+    <script>
+        // Function to handle login
+        document.getElementById('loginBtn').addEventListener('click', function () {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === "Khaleel" && password === "Khaleel") {
+                // Hide login page and show codegen page
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('codegenPage').style.display = 'block';
+            } else {
+                alert('Incorrect username or password!');
+            }
+        });
+
+        // Code generation functionality
+        document.getElementById('generateBtn').addEventListener('click', function () {
+            const folderPath = document.getElementById('folderPath').value;
+            const loanNumber = document.getElementById('loanNumber').value;
+    
+            if (!folderPath || !loanNumber) {
+                alert('Please fill in both fields!');
+                return;
+            }
+    
+            const code = `
+function Rename-PDFs {
+    param (
+        [string]$FolderPath,
+        [string]$Prefix
+    )
+    
+    try {
+        # Get the current date in the desired format (e.g., MMDDYYYY)
+        $currentDate = (Get-Date).ToString("MMddyyyy")
+    
+        # Get all PDF files in the folder
+        $files = Get-ChildItem -Path $FolderPath -File -Filter "*.pdf"
+    
+        foreach ($file in $files) {
+            $originalName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+            # Generate new filename using concatenation
+            $newFilename = $Prefix + "_" + $originalName + "_" + $currentDate + ".pdf"
+            $newFilePath = Join-Path -Path $FolderPath -ChildPath $newFilename
+    
+            # Rename the file
+            Rename-Item -Path $file.FullName -NewName $newFilename
+            Write-Output "Renamed: $($file.Name) -> $newFilename"
+        }
+    } catch {
+        Write-Output "Error: $_"
+    }
+}
+
+# Example usage
+$FolderPath = "${folderPath}"
+$Prefix = "${loanNumber}"
+
+Rename-PDFs -FolderPath $FolderPath -Prefix $Prefix;
+            `;
+    
+            document.getElementById('output').value = code;
+        });
+    </script>
+
+</body>
+</html>
