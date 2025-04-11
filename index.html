@@ -87,7 +87,10 @@
 
     <!-- Login Page -->
     <div id="loginPage" class="container">
-        unable to access this page at this moment please contact your administrator 
+       <h2>Login</h2>
+         <input type="text" id="username" placeholder="Username">
+         <input type="password" id="password" placeholder="Password">
+         <button id="loginBtn">Login</button>
     </div>
 
     <!-- Code Generator Page (hidden initially) -->
@@ -111,7 +114,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (username === "Khaleels" && password === "Khaleels") {
+            if (username === "khaleel" && password === "khaleel") {
                 // Hide login page and show codegen page
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('codegenPage').style.display = 'block';
